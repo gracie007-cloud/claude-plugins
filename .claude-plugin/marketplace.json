@@ -1,0 +1,23 @@
+{
+  "name": "claude-plugins",
+  "owner": {
+    "name": "yoggu"
+  },
+  "plugins": [
+    {
+      "name": "drupal-updates",
+      "source": "./drupal-updates",
+      "description": "Perform Drupal core and contributed module updates using Composer"
+    },
+    {
+      "name": "drupal-update-orchestrator",
+      "source": "./drupal-update-orchestrator",
+      "description": "Orchestrate Drupal updates across multiple projects"
+    },
+    {
+      "name": "skill-creator",
+      "source": "./skill-creator",
+      "description": "Guide for creating effective Claude Code skills"
+    }
+  ]
+}
