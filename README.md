@@ -27,7 +27,8 @@ Or install directly:
 | Plugin | Description |
 |--------|-------------|
 | `drupal-updates` | Drupal core and module update workflow using Composer |
-| `drupal-update-orchestrator` | Batch updates across multiple Drupal projects |
+| `node-modules-update` | Node.js dependency updates using npm |
+| `update-orchestrator` | Batch updates across multiple Drupal and Node.js projects |
 | `skill-creator` | Guide for creating Claude Code skills |
 
 ## License
