@@ -136,11 +136,7 @@ Check for:
 
 ### 9. Test the Site
 
-Use Playwright MCP or manual testing:
-- Homepage loads correctly
-- Admin login works
-- Content management functional
-- No PHP errors in status report
+Run existing Playwright tests if the project has them. Otherwise, do a smoke test to verify the homepage loads.
 
 ### 10. Commit Changes
 ```bash

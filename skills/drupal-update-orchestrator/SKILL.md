@@ -6,7 +6,7 @@ allowed-tools: Bash(ddev:*), Bash(npm:*), Bash(git:*), Bash(gh:*), Bash(composer
 
 # Update Orchestrator
 
-Orchestrate dependency updates across multiple Drupal and Node.js projects using subagents for parallel/sequential execution.
+Orchestrate dependency updates across multiple Drupal and Node.js projects using subagents for parallel execution.
 
 ## Prerequisites
 
@@ -23,39 +23,58 @@ Run the discovery script to find all projects in the current directory:
 ~/.claude/skills/drupal-update-orchestrator/scripts/discover_projects.sh
 ```
 
-The script scans subdirectories (1 level deep) and detects:
-- **Drupal projects**: composer.json with drupal/core dependency
-- **Node.js projects**: package.json without drupal/core
-
 Output format:
 ```json
 [
-  {"path": "/Users/name/Sites/site-a", "name": "site-a", "type": "drupal", "version": "10.4.6"},
-  {"path": "/Users/name/Sites/app-b", "name": "app-b", "type": "node", "version": "1.2.3"}
+  {"path": "/path/to/site-a", "name": "site-a", "type": "drupal", "version": "10.4.6"},
+  {"path": "/path/to/app-b", "name": "app-b", "type": "node", "version": "1.2.3"}
 ]
 ```
 
-### Step 2: User Selection
+### Step 2: Ask Project Type
 
-Present the discovered projects as a numbered list showing type:
+Ask the user what type of projects to update:
 
 ```
-Available Projects:
-1. [Drupal 10.4.6] site-a
-2. [Drupal 10.5.2] site-b
-3. [Node 1.2.3] app-c
-4. [Node 2.0.0] app-d
+What type of projects do you want to update?
+1. Drupal projects only
+2. Node.js projects only
+3. Both Drupal and Node.js
+```
+
+### Step 3: Project Selection by Type
+
+Based on user's choice, show the relevant project lists separately:
+
+**If Drupal selected:**
+```
+=== Drupal Projects ===
+1. [10.4.6] site-a
+2. [10.5.2] site-b
+3. [10.3.1] site-c
 
 Enter project numbers to update (e.g., 1,3 or 1-3 or all):
 ```
+
+**If Node.js selected:**
+```
+=== Node.js Projects ===
+1. [1.2.3] app-a
+2. [2.0.0] app-b
+
+Enter project numbers to update (e.g., 1,3 or 1-3 or all):
+```
+
+**If both selected:** Show Drupal list first, collect selection, then show Node.js list.
 
 Parse user input:
 - Single numbers: `1` or `3`
 - Comma-separated: `1,3,5`
 - Ranges: `1-3` (expands to 1,2,3)
 - All: `all` or `*`
+- Skip: `none` or `skip` (for skipping a category when both selected)
 
-### Step 3: Launch Subagent Updates
+### Step 4: Launch Subagent Updates
 
 For each selected project, launch a subagent using the Task tool:
 
@@ -80,30 +99,32 @@ If the update fails, return the error message."
 - PR URL (if successful)
 - Error message (if failed)
 
-### Step 4: Collect Results
+### Step 5: Collect Results
 
 Use TaskOutput to collect results from all subagents. Parse each result for:
 - Success/failure status
 - PR URL (extract from subagent output)
 - Error details if failed
 
-### Step 5: Summary
+### Step 6: Summary
 
 After all updates complete, display a summary with PR links:
 
 ```
 === Update Summary ===
 
-Completed (3):
-✓ site-a (Drupal)
+Drupal Projects (2):
+✓ site-a
   PR: https://bitbucket.org/workspace/site-a/pull-requests/123
-✓ site-b (Drupal)
+✓ site-b
   PR: https://bitbucket.org/workspace/site-b/pull-requests/456
-✓ app-c (Node)
-  PR: https://github.com/org/app-c/pull/789
+
+Node.js Projects (1):
+✓ app-a
+  PR: https://github.com/org/app-a/pull/789
 
 Failed (1):
-✗ app-d (Node)
+✗ app-b (Node)
   Error: Build failed - TypeScript compilation errors
 
 Total: 3 successful, 1 failed
