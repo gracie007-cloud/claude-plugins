@@ -1,12 +1,12 @@
 ---
 name: update-orchestrator
 description: "Orchestrate dependency updates across multiple projects. Use when asked to update multiple sites, batch update projects, manage updates across a portfolio of Drupal sites or Node.js projects, or run updates on several projects at once. Supports both Drupal (Composer) and Node.js (npm) projects."
-allowed-tools: Bash(ddev:*), Bash(npm:*), Bash(git:*), Bash(gh:*), Bash(composer:*), Read
+allowed-tools: Bash(ddev:*), Bash(npm:*), Bash(git:*), Bash(gh:*), Bash(composer:*), Read, Task
 ---
 
 # Update Orchestrator
 
-Orchestrate dependency updates across multiple Drupal and Node.js projects with automated discovery, user selection, and sequential execution.
+Orchestrate dependency updates across multiple Drupal and Node.js projects using subagents for parallel/sequential execution.
 
 ## Prerequisites
 
@@ -55,32 +55,56 @@ Parse user input:
 - Ranges: `1-3` (expands to 1,2,3)
 - All: `all` or `*`
 
-### Step 3: Sequential Updates
+### Step 3: Launch Subagent Updates
 
-For each selected project, run the update in sequence:
+For each selected project, launch a subagent using the Task tool:
 
-1. **Change to project directory**
-2. **Announce current project**: Display name and type
-3. **Invoke appropriate skill**:
-   - Drupal projects → use `drupal-updates` skill workflow
-   - Node.js projects → use `node-modules-update` skill workflow
-4. **Track result**: Record success or failure
-5. **Continue to next project**
+```
+Use the Task tool with subagent_type="general-purpose" for each project:
 
-### Step 4: Summary
+Prompt template:
+"Update the project at {path}.
+Project type: {type}
+Use the {skill-name} skill workflow.
+After creating the PR, return the PR URL.
+If the update fails, return the error message."
+```
 
-After all updates complete, display a summary:
+**Subagent configuration:**
+- `subagent_type`: "general-purpose"
+- `run_in_background`: true (to run updates in parallel)
+- Wait for all subagents to complete using TaskOutput
+
+**Important:** Each subagent must return:
+- Status: success or failure
+- PR URL (if successful)
+- Error message (if failed)
+
+### Step 4: Collect Results
+
+Use TaskOutput to collect results from all subagents. Parse each result for:
+- Success/failure status
+- PR URL (extract from subagent output)
+- Error details if failed
+
+### Step 5: Summary
+
+After all updates complete, display a summary with PR links:
 
 ```
 === Update Summary ===
 
 Completed (3):
-✓ site-a (Drupal) - PR created
-✓ site-b (Drupal) - PR created
-✓ app-c (Node) - PR created
+✓ site-a (Drupal)
+  PR: https://bitbucket.org/workspace/site-a/pull-requests/123
+✓ site-b (Drupal)
+  PR: https://bitbucket.org/workspace/site-b/pull-requests/456
+✓ app-c (Node)
+  PR: https://github.com/org/app-c/pull/789
 
 Failed (1):
-✗ app-d (Node) - Build failed
+✗ app-d (Node)
+  Error: Build failed - TypeScript compilation errors
 
 Total: 3 successful, 1 failed
 ```
