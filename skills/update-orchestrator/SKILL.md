@@ -44,37 +44,53 @@ What type of projects do you want to update?
 3. Both Drupal and Node.js
 ```
 
-### Step 3: Project Selection by Type
+### Step 3: Interactive Project Selection
 
-Based on user's choice, show the relevant project lists separately:
+Use `AskUserQuestion` with `multiSelect: true` to let users select projects with checkboxes.
 
-**If Drupal selected:**
+**Pagination for large lists:**
+AskUserQuestion supports max 4 options per question. For larger lists, paginate:
+
+1. Sort projects alphabetically
+2. Split into batches of 4
+3. Ask each batch with page indicator (e.g., "1/3")
+4. Combine selections from all batches
+
+**Example for 10 Node.js projects:**
 ```
-=== Drupal Projects ===
-1. [10.4.6] site-a
-2. [10.5.2] site-b
-3. [10.3.1] site-c
+Page 1/3: "Select Node.js projects to update (1/3):"
+  [ ] app-a [1.2.3]
+  [ ] app-b [2.0.0]
+  [ ] app-c [1.0.0]
+  [ ] app-d [3.1.0]
 
-Enter project numbers to update (e.g., 1,3 or 1-3 or all):
+Page 2/3: "Select Node.js projects to update (2/3):"
+  [ ] app-e [1.5.0]
+  [ ] app-f [2.1.0]
+  [ ] app-g [1.0.0]
+  [ ] app-h [4.0.0]
+
+Page 3/3: "Select Node.js projects to update (3/3):"
+  [ ] app-i [1.2.0]
+  [ ] app-j [2.0.0]
 ```
 
-**If Node.js selected:**
+**AskUserQuestion format:**
+```json
+{
+  "question": "Select Node.js projects to update (1/3):",
+  "header": "Node.js",
+  "multiSelect": true,
+  "options": [
+    {"label": "app-a [1.2.3]", "description": "/path/to/app-a"},
+    {"label": "app-b [2.0.0]", "description": "/path/to/app-b"},
+    {"label": "app-c [1.0.0]", "description": "/path/to/app-c"},
+    {"label": "app-d [3.1.0]", "description": "/path/to/app-d"}
+  ]
+}
 ```
-=== Node.js Projects ===
-1. [1.2.3] app-a
-2. [2.0.0] app-b
 
-Enter project numbers to update (e.g., 1,3 or 1-3 or all):
-```
-
-**If both selected:** Show Drupal list first, collect selection, then show Node.js list.
-
-Parse user input:
-- Single numbers: `1` or `3`
-- Comma-separated: `1,3,5`
-- Ranges: `1-3` (expands to 1,2,3)
-- All: `all` or `*`
-- Skip: `none` or `skip` (for skipping a category when both selected)
+Collect all selected projects across pages before proceeding to Step 4.
 
 ### Step 4: Launch Subagent Updates
 
