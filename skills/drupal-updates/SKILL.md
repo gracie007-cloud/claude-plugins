@@ -15,6 +15,18 @@ Perform safe, systematic Drupal updates with proper version control, database up
 - Git version control
 - Drush installed
 
+## Update Scope
+
+By default, this skill performs:
+- Patch version updates (x.x.1 → x.x.2)
+- Minor version updates (x.1.x → x.2.x)
+
+This skill does not:
+- Upgrade major versions (1.x.x → 2.x.x) - these often have breaking changes
+- Modify composer.json - composer.lock is the expected change when using `composer update`
+
+For major version upgrades: User should explicitly request them. Use `composer require` which modifies composer.json.
+
 ## Initialization
 
 **Before any update, run these steps first:**
@@ -81,7 +93,7 @@ ddev composer outdated "drupal/*"
 
 Review output for:
 - `!` = patch/minor update recommended
-- `~` = major update available (requires careful review)
+- `~` = major update available - skip unless explicitly requested
 
 ### 2. Update Drupal Core
 Update core packages together with dependencies:
@@ -90,15 +102,21 @@ ddev composer update "drupal/core-*" --with-all-dependencies
 ```
 
 ### 3. Update Contributed Modules
-Update all Drupal modules:
+Update all Drupal modules within existing version constraints:
 ```bash
 ddev composer update "drupal/*" --with-all-dependencies
 ```
 
-For specific module updates:
+### Major Version Upgrades (When Explicitly Requested)
+
+Do not perform major version upgrades unless the user specifically asks.
+
+If explicitly requested:
 ```bash
-ddev composer require drupal/MODULE_NAME:^VERSION --with-all-dependencies
+ddev composer require drupal/MODULE_NAME:^NEW_VERSION --with-all-dependencies
 ```
+
+Note: This modifies composer.json and may introduce breaking changes.
 
 ### 4. Handle Patch Failures
 
@@ -200,9 +218,13 @@ ddev composer update --with-all-dependencies drupal/core-*
 
 ## Files Modified
 
-- `composer.json` - Version constraints (only if using `require`)
+Expected changes (normal update):
 - `composer.lock` - Locked dependency versions
 - `config/sync/` - Exported configuration changes
+
+Not expected (unless explicitly requested):
+- `composer.json` - Should not be modified during normal updates
+- If composer.json was modified, verify it was intentional (major version upgrade)
 
 ## Rollback
 
