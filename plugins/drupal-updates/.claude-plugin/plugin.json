@@ -1,0 +1,7 @@
+{
+  "name": "drupal-updates",
+  "description": "Perform Drupal core and contributed module updates using Composer",
+  "author": {
+    "name": "yoggu"
+  }
+}

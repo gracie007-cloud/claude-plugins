@@ -1,0 +1,7 @@
+{
+  "name": "commit-commands",
+  "description": "Git commit helper command that stages changes and creates commits with context-aware messages",
+  "author": {
+    "name": "yoggu"
+  }
+}

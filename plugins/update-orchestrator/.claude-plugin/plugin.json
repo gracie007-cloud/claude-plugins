@@ -1,0 +1,7 @@
+{
+  "name": "update-orchestrator",
+  "description": "Orchestrate dependency updates across multiple Drupal and Node.js projects",
+  "author": {
+    "name": "yoggu"
+  }
+}

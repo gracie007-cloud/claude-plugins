@@ -1,0 +1,7 @@
+{
+  "name": "worktree-manager",
+  "description": "Manage git worktrees for feature development - create, delete, and list worktrees",
+  "author": {
+    "name": "yoggu"
+  }
+}

@@ -11,38 +11,32 @@
     {
       "name": "drupal-updates",
       "description": "Perform Drupal core and contributed module updates using Composer",
-      "source": "./",
-      "skills": ["./skills/drupal-updates"]
+      "source": "./plugins/drupal-updates"
     },
     {
       "name": "update-orchestrator",
       "description": "Orchestrate dependency updates across multiple Drupal and Node.js projects",
-      "source": "./",
-      "skills": ["./skills/update-orchestrator"]
+      "source": "./plugins/update-orchestrator"
     },
     {
       "name": "skill-creator",
       "description": "Guide for creating effective Claude Code skills",
-      "source": "./",
-      "skills": ["./skills/skill-creator"]
+      "source": "./plugins/skill-creator"
     },
     {
       "name": "node-modules-update",
       "description": "Update Node.js project dependencies using npm with proper version control and testing",
-      "source": "./",
-      "skills": ["./skills/node-modules-update"]
+      "source": "./plugins/node-modules-update"
     },
     {
       "name": "worktree-manager",
       "description": "Manage git worktrees for feature development - create, delete, and list worktrees",
-      "source": "./",
-      "skills": ["./skills/worktree-manager"]
+      "source": "./plugins/worktree-manager"
     },
     {
       "name": "commit-commands",
       "description": "Git commit helper command that stages changes and creates commits with context-aware messages",
-      "source": "./",
-      "commands": ["./commands/commit-commands"]
+      "source": "./plugins/commit-commands"
     }
   ]
 }

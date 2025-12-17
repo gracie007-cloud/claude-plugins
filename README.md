@@ -30,6 +30,8 @@ Or install directly:
 | `node-modules-update` | Node.js dependency updates using npm |
 | `update-orchestrator` | Batch updates across multiple Drupal and Node.js projects |
 | `skill-creator` | Guide for creating Claude Code skills |
+| `worktree-manager` | Manage git worktrees for feature development |
+| `commit-commands` | Git commit helper with `/commit` command |
 
 ## License
 
